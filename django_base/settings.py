@@ -55,6 +55,7 @@ MY_APPS = [
     "orders",
     "products",
     "stores",
+    "arca",
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + MY_APPS

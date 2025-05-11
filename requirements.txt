@@ -1,8 +1,11 @@
 asgiref==3.8.1
 attrs==25.3.0
+Brotli==1.1.0
 certifi==2025.1.31
+cffi==1.17.1
 chardet==5.2.0
 charset-normalizer==3.4.1
+cssselect2==0.8.0
 dj-database-url==2.3.0
 dj-rest-auth==7.0.1
 Django==5.1.6
@@ -12,6 +15,7 @@ djangorestframework==3.15.2
 djangorestframework_simplejwt==5.5.0
 dotenv==0.9.9
 drf-nested-routers==0.94.1
+fonttools==4.57.0
 idna==3.10
 isodate==0.7.2
 Jinja2==3.1.6
@@ -21,7 +25,10 @@ pdfkit==1.0.0
 pillow==11.1.0
 platformdirs==4.3.7
 psycopg==3.2.5
+pycparser==2.22
+pydyf==0.11.0
 PyJWT==2.9.0
+pyphen==0.17.2
 python-dotenv==1.0.1
 pytz==2025.2
 qrcode==8.1
@@ -30,7 +37,12 @@ requests==2.32.3
 requests-file==2.1.0
 requests-toolbelt==1.0.0
 sqlparse==0.5.3
+tinycss2==1.4.0
+tinyhtml5==2.0.0
 typing_extensions==4.12.2
 tzdata==2025.1
 urllib3==2.3.0
+weasyprint==65.1
+webencodings==0.5.1
 zeep==4.3.1
+zopfli==0.2.3.post1

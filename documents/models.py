@@ -260,6 +260,62 @@ class CreditNote(Document):
         ]
 
 
+class Reservation(Document):
+    client = models.ForeignKey("clients.Client", on_delete=models.CASCADE)
+    reserved_until = models.DateField(
+        default=lambda: timezone.now().date() + timezone.timedelta(days=15)
+    )
+    status = models.CharField(
+        max_length=15,
+        choices=[
+            ("active", "Active"),
+            ("expired", "Expired"),
+            ("confirmed", "Confirmed"),
+            ("cancelled", "Cancelled"),
+        ],
+        default="active",
+    )
+
+    def confirm(self):
+        if self.status != "active":
+            raise ValidationError("Only active reservations can be confirmed.")
+
+        order = self.create_order()
+        self.status = "confirmed"
+        self.save()
+        return order
+
+    def cancel(self):
+        if self.status == "active":
+            self.status = "cancelled"
+            self.save()
+
+    def is_expired(self):
+        return self.reserved_until < timezone.now().date()
+
+    def create_order(self):
+        order = Order.objects.create(client=self.client)
+        for item in self.items.all():
+            OrderItem.objects.create(
+                order=order, product=item.product, quantity=item.quantity
+            )
+        return order
+
+    def __str__(self):
+        return f"Reservation #{self.document_number} - Client: {self.client.name}"
+
+
+class ReservationItem(models.Model):
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE, related_name="items"
+    )
+    product = models.ForeignKey("products.Product", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.product.name} (x{self.quantity}) - Reservation #{self.reservation.document_number}"
+
+
 class Return(Document):
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     products_returned = models.TextField()

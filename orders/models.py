@@ -53,6 +53,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    returned_quantity = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -66,3 +67,9 @@ class OrderItem(models.Model):
 
     def total(self):
         return self.product.final_price * self.quantity
+
+    def available_for_return(self):
+        return self.quantity - self.returned_quantity
+
+    def __str__(self):
+        return f"{self.product.name} (x{self.quantity}) - Available for return: {self.available_for_return()}"
