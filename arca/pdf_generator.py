@@ -87,6 +87,7 @@ def invoice_pdf(invoice):
     #     "until": "",
     #     "expiration": "",
     #     "type": invoice.get_document_letter_display(),
+    #     "doc": invoice.get_document_type_display(),
     #     "code": invoice.document_letter,
     #     "concept": "Productos",
     #     "CAE": invoice.json_arca_request["codAut"],
@@ -138,7 +139,7 @@ def invoice_pdf(invoice):
 
     qr_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    html_path = f"{settings.BASE_DIR}/templates/arca_pdf.html"
+    html_path = f"{settings.BASE_DIR}/templates/invoice.html"
 
     html = open(html_path, encoding="utf-8").read()
 
@@ -183,3 +184,21 @@ def invoice_pdf(invoice):
         return None
 
     return pdf_path
+
+
+def generate_pdf(document):
+    doc_type = document.get("document_type")
+    if doc_type == "factura":
+        return invoice_pdf(document)
+    elif doc_type == "recibo":
+        return receipt_pdf(document)
+    elif doc_type == "nota_credito":
+        return credit_note_pdf(document)
+    elif doc_type == "remito":
+        return delivery_note_pdf(document)
+    elif doc_type == "presupuesto":
+        return budget_pdf(document)
+    elif doc_type == "devolucion":
+        return return_pdf(document)
+    else:
+        raise ValueError(f"Tipo de documento inválido: {doc_type}")

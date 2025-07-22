@@ -11,7 +11,9 @@ class Store(models.Model):
         max_length=50, choices=VAT_CONDITIONS, default="responsable_inscripto"
     )
     models.PositiveIntegerField(unique=True)
-    store_number = models.CharField(max_length=4, unique=True, editable=False)
+    store_number = models.CharField(
+        max_length=4, null=True, unique=True, editable=False
+    )
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     email = models.EmailField(max_length=50)
@@ -19,7 +21,7 @@ class Store(models.Model):
     gross_income_id = models.CharField(max_length=20, blank=True, null=True)
     cuit = models.CharField(max_length=20)
     cbu = models.CharField(max_length=22)
-    start_date = models.DateField()
+    start_date = models.DateField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
 

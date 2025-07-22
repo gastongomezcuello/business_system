@@ -27,6 +27,7 @@ class Document(models.Model):
         ("001", "A"),
         ("006", "B"),
         ("011", "C"),
+        ("015", "R"),
         ("099", "X"),
     ]
 
@@ -206,7 +207,7 @@ class Receipt(Document):
             self.document_type = "recibo"
 
         if not self.document_letter:
-            self.document_letter = "X"
+            self.document_letter = "099"
 
         super().save(*args, **kwargs)
 
@@ -220,6 +221,16 @@ class DeliveryNote(Document):
 
     def __str__(self):
         return f"Remito #{self.document_number} - Pedido #{self.order.id} - Cliente: {self.order.client.name}"
+
+    def save(self, *args, **kwargs):
+
+        if not self.document_type:
+            self.document_type = "remito"
+
+        if not self.document_letter:
+            self.document_letter = "015"
+
+        super().save(*args, **kwargs)
 
 
 class Budget(Document):

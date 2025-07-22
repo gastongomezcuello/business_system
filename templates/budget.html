@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Factura</title>
+    <title>Presupuesto</title>
     <style type="text/css">
       * {
         box-sizing: border-box;
@@ -54,7 +54,7 @@
         margin-right: -30px;
         background: white;
         width: 60px;
-        height: 50px;
+        height: 65px;
         position: absolute;
         left: 0;
         right: 0;
@@ -67,6 +67,10 @@
 
       .text-lg {
         font-size: 30px;
+      }
+
+      .text-sm {
+        font-size: 10px;
       }
 
       .text-center {
@@ -186,7 +190,12 @@
     <table class="bill-container">
       <tr class="bill-emitter-row">
         <td>
-          <div class="bill-type">{{ bill['type'] }}</div>
+          <div class="bill-type">
+            {{ bill['type'] }}
+            <div class="text-sm">
+              <strong>COD 00{{ bill['code'] }}</strong>
+            </div>
+          </div>
           <div class="text-lg text-center">
             {{ business_data['business_name'] }}
           </div>

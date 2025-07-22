@@ -20,11 +20,25 @@ class Product(models.Model):
     TAV_ID_TO_DESC = {code: desc for code, _, desc in TAV_CHOICES}
 
     code = models.CharField(max_length=255, unique=True)
+    bar_code = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    group_code = models.CharField(max_length=255, null=True, blank=True)
+    group = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
+    brand_code = models.CharField(max_length=255, null=True, blank=True)
+    brand = models.CharField(max_length=255, null=True, blank=True)
+    measure_code = models.CharField(max_length=255, null=True, blank=True)
+    measure = models.CharField(max_length=255, null=True, blank=True)
     exempt = models.BooleanField(default=False)
     tax_free = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=15, decimal_places=2)
+    ctm_price_1 = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True
+    )
+    ctm_price_2 = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True
+    )
+    offer = models.DecimalField(max_digits=1, decimal_places=4, null=True, blank=True)
     tav = models.PositiveSmallIntegerField(choices=TAV_CHOICES_DJANGO, default=5)
     final_price = models.DecimalField(
         max_digits=15, decimal_places=2, null=True, blank=True
