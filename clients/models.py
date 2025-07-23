@@ -27,13 +27,19 @@ class IdDocument(models.Model):
 class Client(models.Model):
     VAT_CONDITIONS = [
         ("responsable_inscripto", "Responsable inscripto"),
-        ("monotributista", "Monotributista"),
-        ("exento", "Exento"),
+        ("responsable_exento", "Responsable exento"),
+        ("responsable_no_inscripto", "Responsable no inscripto"),
+        ("sujeto_no_categorizado", "Sujeto no categorizado"),
         ("consumidor_final", "Consumidor final"),
+        ("responsable_monotributo", "Responsable Monotributo"),
+        ("sujeto_exento", "Sujeto exento"),
     ]
 
     vat_condition = models.CharField(
         max_length=50, choices=VAT_CONDITIONS, default="consumidor_final"
+    )
+    vat_condition_code = models.IntegerField(
+        default=5, editable=False, blank=True, null=True
     )
     id_data = models.OneToOneField(
         IdDocument,
@@ -55,6 +61,7 @@ class Client(models.Model):
     phone_2 = models.CharField(max_length=15)
     cellphone = models.CharField(max_length=15, blank=True, null=True)
     cellphone_2 = models.CharField(max_length=15, blank=True, null=True)
+    fax = models.CharField(max_length=15, blank=True, null=True)
     page = models.URLField(blank=True, null=True)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
     representative = models.CharField(max_length=100, blank=True, null=True)
@@ -65,7 +72,7 @@ class Client(models.Model):
     )
     observations = models.TextField(blank=True, null=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
