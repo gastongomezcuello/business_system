@@ -58,10 +58,10 @@ class Client(models.Model):
     page = models.URLField(blank=True, null=True)
     contact_name = models.CharField(max_length=100, blank=True, null=True)
     representative = models.CharField(max_length=100, blank=True, null=True)
-    credit_limit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    credit_limit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     price_level = models.CharField(blank=True, null=True, max_length=50)
     discount = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0.00, blank=True, null=True
+        max_digits=15, decimal_places=2, default=0.00, blank=True, null=True
     )
     observations = models.TextField(blank=True, null=True)
 
@@ -76,6 +76,8 @@ class Account(models.Model):
     account_number = models.CharField(max_length=20, unique=True, editable=False)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     debt = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    last_payment_date = models.DateTimeField(null=True, blank=True)
+    last_update = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{_('Account number')} {self.account_number}"
