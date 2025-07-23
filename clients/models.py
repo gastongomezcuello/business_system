@@ -93,6 +93,7 @@ class Account(models.Model):
 
         total_paid = sum(self.payments.values_list("amount", flat=True))
         self.balance = self.debt - total_paid
+        self.last_update = models.DateTimeField(auto_now=True)
         self.save()
 
     def add_debt(self, amount):
@@ -106,6 +107,18 @@ class Account(models.Model):
         self.balance = 0
         self.payments.all().delete()
         self.save()
+
+    def save(self, *args, **kwargs):
+        if not self.account_number:
+            self.account_number = f"ACC-{self.client.code or '0000'}"
+
+        self.last_payment_date = (
+            self.payments.order_by("-date").first().date
+            if self.payments.exists()
+            else None
+        )
+
+        super().save(*args, **kwargs)
 
 
 class PaymentRecord(models.Model):
