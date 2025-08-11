@@ -1,25 +1,36 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from datetime import datetime
+from clients.utils.hashes import generate_numeric_hash
 import random
 
 
 from .models import Client, Account
 
+print("✅ Signals importadas")
 
-def generate_account_number(client):
 
-    random_part = str(random.randint(100000, 999999))
+@receiver(post_save, sender=Client)
+def set_client_code(sender, instance, created, **kwargs):
+    if created:
+        instance.code = generate_numeric_hash(instance.id)
 
-    current_year = str(datetime.now().year)[-2:]
-    client_id = str(client.id).zfill(5)
-
-    account_number = f"{random_part}{current_year}{client_id}"
-    return account_number
+        instance.save()
 
 
 @receiver(post_save, sender=Client)
 def create_account(sender, instance, created, **kwargs):
     if created:
-        account_number = generate_account_number(instance)
-        Account.objects.create(client=instance, account_number=account_number)
+
+        Account.objects.create(
+            client=instance,
+            account_number=("22" + instance.code + str(random.randint(1000, 9999))),
+        )
+
+
+@receiver(post_save, sender=Account)
+def post_account_creation(sender, instance, created, **kwargs):
+    if created:
+        if instance.payments.exists():
+            instance.last_payment_date = (
+                instance.payments.order_by("-date").first().date
+            )

@@ -38,12 +38,11 @@ class Product(models.Model):
     ctm_price_2 = models.DecimalField(
         max_digits=15, decimal_places=2, null=True, blank=True
     )
-    offer = models.DecimalField(max_digits=1, decimal_places=4, null=True, blank=True)
+    offer = models.BooleanField(_("Oferta"), default=False)
     tav = models.PositiveSmallIntegerField(choices=TAV_CHOICES_DJANGO, default=5)
     final_price = models.DecimalField(
         max_digits=15, decimal_places=2, null=True, blank=True
     )
-    stock = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -58,20 +57,3 @@ class Product(models.Model):
         if not self.final_price:
             self.final_price = self.price * (1 + self.get_vat_value / 100)
             super().save(*args, **kwargs)
-
-    def adjust_stock(self, quantity, increase=False):
-        if increase:
-            self.stock += quantity
-            self.save()
-            return True, _("Stock increased successfully.Available: {}").format(
-                self.stock
-            )
-        else:
-            self.stock -= quantity
-            self.save()
-
-            if self.stock < 0:
-                return False, _("Stock is negative. Available: {}").format(self.stock)
-            return True, _("Stock decreased successfully.Available: {}").format(
-                self.stock
-            )

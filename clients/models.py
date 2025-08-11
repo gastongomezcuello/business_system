@@ -26,21 +26,23 @@ class IdDocument(models.Model):
 
 class Client(models.Model):
     VAT_CONDITIONS = [
-        ("responsable_inscripto", "Responsable inscripto"),
-        ("responsable_exento", "Responsable exento"),
-        ("responsable_no_inscripto", "Responsable no inscripto"),
-        ("sujeto_no_categorizado", "Sujeto no categorizado"),
-        ("consumidor_final", "Consumidor final"),
-        ("responsable_monotributo", "Responsable Monotributo"),
-        ("sujeto_exento", "Sujeto exento"),
+        ("1", "IVA Responsable Inscripto"),
+        ("6", "Responsable Monotributo"),
+        ("13", "Monotributista Social"),
+        ("16", "Monotributo Independiente Promovido"),
+        ("4", "IVA Sujeto Exento"),
+        ("5", "Consumidor Final"),
+        ("7", "Sujeto No Categorizado"),
+        ("8", "Proveedor del Exterior"),
+        ("9", "Cliente del Exterior"),
+        ("10", "IVA Liberado – Ley N° 19.640"),
+        ("15", "IVA No Alcanzado"),
     ]
 
-    vat_condition = models.CharField(
-        max_length=50, choices=VAT_CONDITIONS, default="consumidor_final"
+    vat_condition_code = models.CharField(
+        max_length=3, choices=VAT_CONDITIONS, default="5"
     )
-    vat_condition_code = models.IntegerField(
-        default=5, editable=False, blank=True, null=True
-    )
+
     id_data = models.OneToOneField(
         IdDocument,
         on_delete=models.CASCADE,
@@ -55,10 +57,10 @@ class Client(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     address = models.TextField()
-    city = models.CharField(max_length=100)
-    province = models.CharField(max_length=100)
-    phone_1 = models.CharField(max_length=15)
-    phone_2 = models.CharField(max_length=15)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    province = models.CharField(max_length=100, blank=True, null=True)
+    phone_1 = models.CharField(max_length=15, blank=True, null=True)
+    phone_2 = models.CharField(max_length=15, blank=True, null=True)
     cellphone = models.CharField(max_length=15, blank=True, null=True)
     cellphone_2 = models.CharField(max_length=15, blank=True, null=True)
     fax = models.CharField(max_length=15, blank=True, null=True)
@@ -107,18 +109,6 @@ class Account(models.Model):
         self.balance = 0
         self.payments.all().delete()
         self.save()
-
-    def save(self, *args, **kwargs):
-        if not self.account_number:
-            self.account_number = f"ACC-{self.client.code or '0000'}"
-
-        self.last_payment_date = (
-            self.payments.order_by("-date").first().date
-            if self.payments.exists()
-            else None
-        )
-
-        super().save(*args, **kwargs)
 
 
 class PaymentRecord(models.Model):

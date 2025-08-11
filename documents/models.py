@@ -272,10 +272,12 @@ class CreditNote(Document):
 
 
 class Reservation(Document):
+    def default_reserved_until():
+        return timezone.now().date() + timezone.timedelta(days=15)
+
     client = models.ForeignKey("clients.Client", on_delete=models.CASCADE)
-    reserved_until = models.DateField(
-        default=lambda: timezone.now().date() + timezone.timedelta(days=15)
-    )
+    reserved_until = models.DateField(default=default_reserved_until)
+
     status = models.CharField(
         max_length=15,
         choices=[
